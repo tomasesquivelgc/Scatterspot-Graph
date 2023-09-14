@@ -56,9 +56,9 @@ d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
       .attr('y', 80)
       .text('Time in Minutes');
 
-    // Declare the x (horizontal position) scale.
-    const x = d3.scaleLinear()
-      .domain([minX - 1, maxX])
+    // Declare the x (horizontal position) scale as a time scale.
+    const x = d3.scaleTime()
+      .domain([new Date(minX - 1, 1, 1), new Date(maxX + 1, 1, 1)]) // Specify the domain as dates
       .range([marginLeft, width - marginRight]);
 
     // Declare the y (vertical position) scale.
@@ -70,7 +70,7 @@ d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
     svg.append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
       .attr("id", "x-axis")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x).ticks(d3.timeYear.every(2))); // Display year ticks
 
     // Add the y-axis.
     svg.append("g")
@@ -90,13 +90,41 @@ d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
       .attr("data-yvalue", d => new Date(secondsToMilliseconds(d.Seconds))) // Convert seconds to Date object
       .attr("data-date", d => d.Year)
       .attr("data-time", d => new Date(secondsToMilliseconds(d.Seconds))) // Convert seconds to Date object
-      .attr("cx", d => x(d.Year))
+      .attr("cx", d => x(new Date(d.Year, 1, 1))) // Convert year to a Date object
       .attr("cy", d => y(new Date(secondsToMilliseconds(d.Seconds)))) // Convert seconds to Date object
       .attr("r", 6)
       .attr("fill", d => d.Doping ? "red" : "green")
       .on('mousemove', onMouseMove)
       .on('mouseout', onMouseOut);
 
+    // Add the legend.
+    const legend = svg.append("g")
+      .attr("id", "legend");
+
+    legend.append("rect")
+      .attr("x", width - 220)
+      .attr("y", height - 100)
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("fill", "red");
+
+    legend.append("rect")
+      .attr("x", width - 220)
+      .attr("y", height - 70)
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("fill", "green");
+
+    legend.append("text")
+      .attr("x", width - 200)
+      .attr("y", height - 85)
+      .text("Riders with doping allegations");
+
+    legend.append("text")
+      .attr("x", width - 200)
+      .attr("y", height - 55)
+      .text("No doping allegations");
+    
     // Append the SVG element.
     container.append(svg.node());
   })
