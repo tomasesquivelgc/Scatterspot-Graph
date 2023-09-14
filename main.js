@@ -3,7 +3,7 @@ const height = 400;
 const marginTop = 20;
 const marginRight = 20;
 const marginBottom = 30;
-const marginLeft = 40;
+const marginLeft = 60;
 
 // Create the SVG container.
 const svg = d3.create("svg")
