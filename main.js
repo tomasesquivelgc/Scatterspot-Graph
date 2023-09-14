@@ -8,7 +8,12 @@ const marginLeft = 40;
 // Create the SVG container.
 const svg = d3.create("svg")
   .attr("width", width)
-  .attr("height", height);
+  .attr("height", height)
+  .attr("margin-top", marginTop)
+  .attr("margin-right", marginRight)
+  .attr("margin-bottom", marginBottom)
+  .attr("margin-left", marginLeft);
+
 
 var tooltip = d3
   .select('.visHolder')
@@ -23,13 +28,17 @@ function onMouseMove(event) {
   const dataTime = new Date(event.target.getAttribute('data-time'));
   const dataTimeMinutes = dataTime.getMinutes();
   const dataTimeSeconds = dataTime.getSeconds();
+  const dataName = event.target.getAttribute('name');
+  const dataOrigin = event.target.getAttribute('origin');
+  const dataDoping = event.target.getAttribute('data-doping');
+  const dopingInfo = dataDoping !== "" ? `<br>${dataDoping}` : "";
 
   // Use the x and y coordinates to position the tooltip
-  tooltip.style('left', x + "px") // Adjust the offset as needed
+  tooltip.style('left', x - 150 + "px") // Adjust the offset as needed
     .style('top', y + "px") // Adjust the offset as needed
     .style('opacity', 1)
-    .attr('data-date', dataDate)
-    .html(`Year: ${dataDate}<br>Time: ${dataTimeMinutes}:${dataTimeSeconds < 10 ? '0' : ''}${dataTimeSeconds}`);
+    .attr('data-year', dataDate)
+    .html(`${dataName}: ${dataOrigin}<br>Year: ${dataDate}<br>Time: ${dataTimeMinutes}:${dataTimeSeconds < 10 ? '0' : ''}${dataTimeSeconds}<br>${dopingInfo}`);
 }
 
 // Function to hide the tooltip on mouseout
@@ -53,7 +62,7 @@ d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
       .append('text')
       .attr('transform', 'rotate(-90)')
       .attr('x', -200)
-      .attr('y', 80)
+      .attr('y', 10)
       .text('Time in Minutes');
 
     // Declare the x (horizontal position) scale as a time scale.
@@ -86,6 +95,9 @@ d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/mas
       .enter()
       .append("circle")
       .attr("class", "dot")
+      .attr("name", d => d.Name)
+      .attr("origin", d => d.Nationality)
+      .attr("data-doping", d => d.Doping)
       .attr("data-xvalue", d => d.Year)
       .attr("data-yvalue", d => new Date(secondsToMilliseconds(d.Seconds))) // Convert seconds to Date object
       .attr("data-date", d => d.Year)

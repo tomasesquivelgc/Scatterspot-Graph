@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#container {
+  height: 560px;
+  width: 900px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 20px 20px;
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  margin: 0 auto; /* Center horizontally within the parent */
+  position: relative;
+}
+
+#tooltip {
+  position: absolute;
+  background-color: rgba(93, 140, 179, 0.9);
+  padding: 10px;
+  border-radius: 5px;
+  pointer-events: none; /* Prevents tooltip from blocking mouse interactions with underlying elements */
+  opacity: 0;
+}
